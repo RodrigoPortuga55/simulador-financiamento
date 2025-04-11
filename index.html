@@ -3,154 +3,182 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador Completo - RS Gestão Imobiliária</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+  <title>Simulador RS Imobiliária</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f4f4f4;
+      background: #f8f8f8;
       margin: 0;
       padding: 0;
     }
     .container {
-      max-width: 800px;
-      margin: auto;
+      max-width: 700px;
+      margin: 40px auto;
       background: #fff;
       padding: 30px;
-      margin-top: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     h1 {
-      text-align: center;
       color: #b30000;
+      text-align: center;
     }
-    label {
+    label, select, input {
       display: block;
-      margin: 15px 0 5px;
-    }
-    input, select {
       width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      margin-bottom: 15px;
       font-size: 16px;
     }
     button {
-      margin-top: 20px;
-      background-color: #b30000;
-      color: white;
+      background: #b30000;
+      color: #fff;
+      border: none;
       padding: 12px;
       font-size: 16px;
-      border: none;
-      width: 100%;
-      border-radius: 8px;
       cursor: pointer;
-    }
-    table {
       width: 100%;
-      margin-top: 30px;
-      border-collapse: collapse;
+      margin-bottom: 10px;
     }
-    table th, table td {
-      padding: 10px;
-      border: 1px solid #ccc;
+    button:hover {
+      background: #900;
+    }
+    #resultado {
+      margin-top: 20px;
+      white-space: pre-wrap;
       font-size: 14px;
     }
-    .footer {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 13px;
-      color: #777;
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>Simulação de Financiamento - RS Gestão Imobiliária</h1>
+  <div class="container">
+    <h1>🏠 RS GESTÃO IMOBILIÁRIA</h1>
+    <p style="text-align:center">Simulador de Financiamento Imobiliário</p>
+    
+    <label>Nome completo:</label>
+    <input type="text" id="nome" required>
 
-  <label for="valorImovel">Valor do imóvel (R$):</label>
-  <input type="number" id="valorImovel" required>
+    <label>Data de nascimento:</label>
+    <input type="date" id="nascimento" required>
 
-  <label for="entrada">Valor da entrada (R$):</label>
-  <input type="number" id="entrada" required>
+    <label>Telefone:</label>
+    <input type="tel" id="telefone" required>
 
-  <label for="prazo">Prazo (em anos):</label>
-  <select id="prazo">
-    <option value="10">10 anos</option>
-    <option value="15">15 anos</option>
-    <option value="20">20 anos</option>
-    <option value="25">25 anos</option>
-    <option value="30">30 anos</option>
-  </select>
+    <label>Valor do imóvel (R$):</label>
+    <input type="number" id="valorImovel" required>
 
-  <label for="banco">Banco:</label>
-  <select id="banco">
-    <option value="Itau">Itaú</option>
-    <option value="Bradesco">Bradesco</option>
-    <option value="Santander">Santander</option>
-  </select>
+    <label>Valor da entrada (R$):</label>
+    <input type="number" id="entrada" required>
 
-  <button onclick="simular()">Simular</button>
+    <label>Prazo (anos):</label>
+    <select id="prazo">
+      <option>10</option>
+      <option>15</option>
+      <option>20</option>
+      <option>25</option>
+      <option>30</option>
+    </select>
 
-  <div id="resultado"></div>
+    <label>Sistema de amortização:</label>
+    <select id="sistema">
+      <option value="SAC">SAC</option>
+      <option value="PRICE">PRICE</option>
+    </select>
 
-  <div class="footer">
-    Desenvolvido para uso exclusivo da RS Gestão Imobiliária.
+    <label>Banco:</label>
+    <select id="banco">
+      <option value="Itau">Itaú</option>
+      <option value="Bradesco">Bradesco</option>
+      <option value="Santander">Santander</option>
+    </select>
+
+    <button onclick="simular()">Simular</button>
+    <div class="btn-group">
+      <button onclick="imprimir()">🖨️ Imprimir</button>
+      <button onclick="baixarPDF()">📄 Baixar PDF</button>
+      <button onclick="compartilharWhatsApp()">📲 Enviar via WhatsApp</button>
+    </div>
+
+    <div id="resultado"></div>
   </div>
-</div>
 
 <script>
-function formatarMoeda(valor) {
-  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
 function simular() {
+  const nome = document.getElementById('nome').value;
+  const nascimento = document.getElementById('nascimento').value;
+  const telefone = document.getElementById('telefone').value;
   const valorImovel = parseFloat(document.getElementById('valorImovel').value);
   const entrada = parseFloat(document.getElementById('entrada').value);
-  const prazo = parseInt(document.getElementById('prazo').value);
+  const prazoAnos = parseInt(document.getElementById('prazo').value);
+  const sistema = document.getElementById('sistema').value;
   const banco = document.getElementById('banco').value;
 
   const financiamento = valorImovel - entrada;
-  const meses = prazo * 12;
+  const prazoMeses = prazoAnos * 12;
+  let taxaAnual = 12.9;
+  let rendaMinima = 0;
 
-  let taxaAnual;
   switch (banco) {
-    case 'Itau': taxaAnual = 12.9; break;
-    case 'Bradesco': taxaAnual = 11.9; break;
-    case 'Santander': taxaAnual = 13.9; break;
-    default: taxaAnual = 12.9;
+    case 'Bradesco': taxaAnual = 11.9; rendaMinima = financiamento / 240; break;
+    case 'Santander': taxaAnual = 13.9; rendaMinima = financiamento / 220; break;
+    default: taxaAnual = 12.9; rendaMinima = financiamento / 200;
   }
 
+  const idade = new Date().getFullYear() - new Date(nascimento).getFullYear();
   const taxaMensal = Math.pow(1 + taxaAnual / 100, 1 / 12) - 1;
-  const amortizacao = financiamento / meses;
+  const mip = financiamento * (0.0003 + (idade > 45 ? 0.0004 : 0.0002));
+  const dfi = financiamento * 0.0004;
 
-  let resultadoHTML = `<h3>Detalhamento da Simulação</h3>`;
-  resultadoHTML += `<p><strong>Banco:</strong> ${banco} | <strong>Taxa Anual:</strong> ${taxaAnual.toFixed(2)}%</p>`;
-  resultadoHTML += `<p><strong>Valor Financiado:</strong> ${formatarMoeda(financiamento)} | <strong>Prazo:</strong> ${prazo} anos (${meses} meses)</p>`;
+  const amortizacao = financiamento / prazoMeses;
+  const primeiraParcela = sistema === 'SAC'
+    ? amortizacao + financiamento * taxaMensal + mip + dfi
+    : (financiamento * taxaMensal) / (1 - Math.pow(1 + taxaMensal, -prazoMeses)) + mip + dfi;
 
-  resultadoHTML += `<table><tr><th>Parcela</th><th>Amortização</th><th>Juros</th><th>MIP</th><th>DFI</th><th>Total</th></tr>`;
+  let resultado = `Olá ${nome},
 
-  for (let i = 1; i <= meses; i++) {
-    const saldoDevedor = financiamento - amortizacao * (i - 1);
-    const juros = saldoDevedor * taxaMensal;
-    const mip = saldoDevedor * 0.0004; // Ex: 0,04%
-    const dfi = financiamento * 0.00013; // Ex: 0,013% sobre valor do imóvel
-    const total = amortizacao + juros + mip + dfi;
+Simulação concluída:
 
-    resultadoHTML += `<tr>
-      <td>${i}</td>
-      <td>${formatarMoeda(amortizacao)}</td>
-      <td>${formatarMoeda(juros)}</td>
-      <td>${formatarMoeda(mip)}</td>
-      <td>${formatarMoeda(dfi)}</td>
-      <td><strong>${formatarMoeda(total)}</strong></td>
-    </tr>`;
-  }
-  resultadoHTML += `</table>`;
-  document.getElementById('resultado').innerHTML = resultadoHTML;
+Valor do imóvel: R$ ${valorImovel.toLocaleString('pt-BR')}
+Entrada: R$ ${entrada.toLocaleString('pt-BR')}
+Valor financiado: R$ ${financiamento.toLocaleString('pt-BR')}
+Banco: ${banco} (Taxa: ${taxaAnual}% a.a.)
+Prazo: ${prazoAnos} anos (${prazoMeses} meses)
+Sistema: ${sistema}
+
+Seguros obrigatórios:
+MIP: R$ ${mip.toFixed(2)} / mês
+DFI: R$ ${dfi.toFixed(2)} / mês
+
+🔐 Renda mínima estimada: R$ ${rendaMinima.toFixed(2)}
+💸 Primeira parcela estimada: R$ ${primeiraParcela.toFixed(2)}
+`;
+
+  document.getElementById('resultado').innerText = resultado;
+}
+
+function imprimir() {
+  window.print();
+}
+
+function baixarPDF() {
+  const texto = document.getElementById('resultado').innerText;
+  const blob = new Blob([texto], {type: 'application/pdf'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'simulacao_rs.pdf';
+  link.click();
+}
+
+function compartilharWhatsApp() {
+  const texto = encodeURIComponent(document.getElementById('resultado').innerText);
+  const url = `https://api.whatsapp.com/send?text=${texto}`;
+  window.open(url, '_blank');
 }
 </script>
-
 </body>
 </html>
