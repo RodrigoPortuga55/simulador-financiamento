@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulador de Financiamento - RS Gestão Imobiliária</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 700px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #b00000;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: #b00000;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #resultado {
+      background: #f2f2f2;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🏠 RS GESTÃO IMOBILIÁRIA<br>Simulação de Financiamento - SAC</h2>
+
+    <label for="valorImovel">Valor do imóvel (R$):</label>
+    <input type="text" id="valorImovel" placeholder="Ex: 500000" required />
+
+    <label for="valorEntrada">Valor da entrada (R$):</label>
+    <input type="text" id="valorEntrada" placeholder="Ex: 200000" required />
+
+    <label for="prazo">Prazo (em anos):</label>
+    <select id="prazo">
+      <option value="20">20 anos</option>
+      <option value="25">25 anos</option>
+      <option value="30">30 anos</option>
+    </select>
+
+    <label for="banco">Banco:</label>
+    <select id="banco">
+      <option value="bradesco">Bradesco</option>
+      <option value="itau">Itaú</option>
+      <option value="santander">Santander</option>
+    </select>
+
+    <button id="btnSimular">Simular</button>
+
+    <div id="resultado"></div>
+  </div>
+
+  <script>
+    function desformatar(valor) {
+      return parseFloat(valor.replace(/\D/g, "")) / 100;
+    }
+
+    function formatarMoeda(valor) {
+      return valor.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      });
+    }
+
+    document.getElementById("btnSimular").addEventListener("click", function () {
+      const valorImovel = desformatar(document.getElementById("valorImovel").value);
+      const valorEntrada = desformatar(document.getElementById("valorEntrada").value);
+      const prazo = parseInt(document.getElementById("prazo").value);
+      const banco = document.getElementById("banco").value;
+
+      let taxa;
+      if (banco === "bradesco") taxa = 0.119;
+      else if (banco === "itau") taxa = 0.129;
+      else if (banco === "santander") taxa = 0.139;
+
+      const meses = prazo * 12;
+      const valorFinanciado = valorImovel - valorEntrada;
+      const amortizacao = valorFinanciado / meses;
+      let saldo = valorFinanciado;
+      let jurosTotal = 0;
+
+      for (let i = 0; i < meses; i++) {
+        let jurosMes = saldo * (taxa / 12);
+        jurosTotal += jurosMes;
+        saldo -= amortizacao;
+      }
+
+      const parcelaMedia = (valorFinanciado + jurosTotal) / meses;
+
+      document.getElementById("resultado").innerHTML = `
+        <strong>Parcela média estimada:</strong> ${formatarMoeda(parcelaMedia)}<br>
+        <strong>Total de juros estimado:</strong> ${formatarMoeda(jurosTotal)}<br>
+        <strong>Total financiado:</strong> ${formatarMoeda(valorFinanciado + jurosTotal)}
+      `;
+    });
+  </script>
+</body>
+</html>
