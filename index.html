@@ -3,154 +3,154 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simulador de Financiamento - RS Gestão Imobiliária</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap">
+  <title>Simulador Completo - RS Gestão Imobiliária</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
   <style>
     body {
       font-family: 'Inter', sans-serif;
-      background-color: #f7f7f7;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 0;
     }
     .container {
-      max-width: 600px;
-      background: white;
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
       padding: 30px;
-      border-radius: 10px;
-      margin: 50px auto;
+      margin-top: 30px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 12px;
     }
     h1 {
       text-align: center;
-      font-size: 22px;
       color: #b30000;
-      margin-bottom: 20px;
     }
     label {
-      font-weight: 600;
       display: block;
-      margin-top: 20px;
+      margin: 15px 0 5px;
     }
     input, select {
       width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      font-size: 15px;
+      padding: 10px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      font-size: 16px;
     }
     button {
-      width: 100%;
+      margin-top: 20px;
       background-color: #b30000;
       color: white;
-      border: none;
-      padding: 15px;
+      padding: 12px;
       font-size: 16px;
-      margin-top: 30px;
+      border: none;
+      width: 100%;
+      border-radius: 8px;
       cursor: pointer;
-      border-radius: 6px;
     }
-    button:hover {
-      background-color: #900;
+    table {
+      width: 100%;
+      margin-top: 30px;
+      border-collapse: collapse;
+    }
+    table th, table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 14px;
     }
     .footer {
-      text-align: center;
       margin-top: 30px;
-      color: #666;
-      font-size: 14px;
+      text-align: center;
+      font-size: 13px;
+      color: #777;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🏡 RS GESTÃO IMOBILIÁRIA<br>Simulador de Financiamento SAC</h1>
+<div class="container">
+  <h1>Simulação de Financiamento - RS Gestão Imobiliária</h1>
 
-    <label for="nome">Nome completo:</label>
-    <input type="text" id="nome" required>
+  <label for="valorImovel">Valor do imóvel (R$):</label>
+  <input type="number" id="valorImovel" required>
 
-    <label for="email">E-mail:</label>
-    <input type="email" id="email" required>
+  <label for="entrada">Valor da entrada (R$):</label>
+  <input type="number" id="entrada" required>
 
-    <label for="telefone">Telefone:</label>
-    <input type="tel" id="telefone" required>
+  <label for="prazo">Prazo (em anos):</label>
+  <select id="prazo">
+    <option value="10">10 anos</option>
+    <option value="15">15 anos</option>
+    <option value="20">20 anos</option>
+    <option value="25">25 anos</option>
+    <option value="30">30 anos</option>
+  </select>
 
-    <label for="dataNascimento">Data de nascimento:</label>
-    <input type="date" id="dataNascimento" required>
+  <label for="banco">Banco:</label>
+  <select id="banco">
+    <option value="Itau">Itaú</option>
+    <option value="Bradesco">Bradesco</option>
+    <option value="Santander">Santander</option>
+  </select>
 
-    <label for="valorImovel">Valor do imóvel:</label>
-    <input type="number" id="valorImovel" required>
+  <button onclick="simular()">Simular</button>
 
-    <label for="entrada">Valor da entrada:</label>
-    <input type="number" id="entrada" required>
+  <div id="resultado"></div>
 
-    <label for="prazo">Prazo (em anos):</label>
-    <select id="prazo">
-      <option>10 anos</option>
-      <option>15 anos</option>
-      <option selected>20 anos</option>
-      <option>25 anos</option>
-      <option>30 anos</option>
-    </select>
-
-    <label for="banco">Banco:</label>
-    <select id="banco">
-      <option>Itau</option>
-      <option>Bradesco</option>
-      <option>Santander</option>
-    </select>
-
-    <button onclick="simularCredito()">Simular</button>
-
-    <div class="footer">
-      Desenvolvido para uso exclusivo da RS Gestão Imobiliária.
-    </div>
+  <div class="footer">
+    Desenvolvido para uso exclusivo da RS Gestão Imobiliária.
   </div>
+</div>
 
-  <script>
-    function simularCredito() {
-      const nome = document.getElementById('nome').value;
-      const email = document.getElementById('email').value;
-      const telefone = document.getElementById('telefone').value;
-      const nascimento = document.getElementById('dataNascimento').value;
-      const valorImovel = parseFloat(document.getElementById('valorImovel').value);
-      const entrada = parseFloat(document.getElementById('entrada').value);
-      const prazoAnos = parseInt(document.getElementById('prazo').value);
-      const banco = document.getElementById('banco').value;
+<script>
+function formatarMoeda(valor) {
+  return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
 
-      if (!nome || !email || !telefone || !nascimento || !valorImovel || !entrada || !prazoAnos || !banco) {
-        alert("Por favor, preencha todos os campos.");
-        return;
-      }
+function simular() {
+  const valorImovel = parseFloat(document.getElementById('valorImovel').value);
+  const entrada = parseFloat(document.getElementById('entrada').value);
+  const prazo = parseInt(document.getElementById('prazo').value);
+  const banco = document.getElementById('banco').value;
 
-      const prazoMeses = prazoAnos * 12;
-      const financiamento = valorImovel - entrada;
-      let taxaAnual;
+  const financiamento = valorImovel - entrada;
+  const meses = prazo * 12;
 
-      switch (banco) {
-        case "Itau":
-          taxaAnual = 12.9; break;
-        case "Bradesco":
-          taxaAnual = 11.9; break;
-        case "Santander":
-          taxaAnual = 13.9; break;
-        default:
-          taxaAnual = 12.9;
-      }
+  let taxaAnual;
+  switch (banco) {
+    case 'Itau': taxaAnual = 12.9; break;
+    case 'Bradesco': taxaAnual = 11.9; break;
+    case 'Santander': taxaAnual = 13.9; break;
+    default: taxaAnual = 12.9;
+  }
 
-      const taxaMensal = Math.pow(1 + taxaAnual / 100, 1 / 12) - 1;
-      const amortizacao = financiamento / prazoMeses;
-      const primeiraParcela = amortizacao + (financiamento * taxaMensal);
+  const taxaMensal = Math.pow(1 + taxaAnual / 100, 1 / 12) - 1;
+  const amortizacao = financiamento / meses;
 
-      const resultado = `Olá ${nome}, sua simulação de financiamento foi concluída!\n\n` +
-        `Valor do imóvel: R$ ${valorImovel.toLocaleString('pt-BR')}\n` +
-        `Entrada: R$ ${entrada.toLocaleString('pt-BR')}\n` +
-        `Valor financiado: R$ ${(financiamento).toLocaleString('pt-BR')}\n` +
-        `Banco: ${banco} - Taxa: ${taxaAnual.toFixed(2)}% a.a.\n` +
-        `Prazo: ${prazoAnos} anos (${prazoMeses} meses)\n` +
-        `Primeira parcela: R$ ${primeiraParcela.toFixed(2)}\n`;
+  let resultadoHTML = `<h3>Detalhamento da Simulação</h3>`;
+  resultadoHTML += `<p><strong>Banco:</strong> ${banco} | <strong>Taxa Anual:</strong> ${taxaAnual.toFixed(2)}%</p>`;
+  resultadoHTML += `<p><strong>Valor Financiado:</strong> ${formatarMoeda(financiamento)} | <strong>Prazo:</strong> ${prazo} anos (${meses} meses)</p>`;
 
-      alert(resultado);
-    }
-  </script>
+  resultadoHTML += `<table><tr><th>Parcela</th><th>Amortização</th><th>Juros</th><th>MIP</th><th>DFI</th><th>Total</th></tr>`;
+
+  for (let i = 1; i <= meses; i++) {
+    const saldoDevedor = financiamento - amortizacao * (i - 1);
+    const juros = saldoDevedor * taxaMensal;
+    const mip = saldoDevedor * 0.0004; // Ex: 0,04%
+    const dfi = financiamento * 0.00013; // Ex: 0,013% sobre valor do imóvel
+    const total = amortizacao + juros + mip + dfi;
+
+    resultadoHTML += `<tr>
+      <td>${i}</td>
+      <td>${formatarMoeda(amortizacao)}</td>
+      <td>${formatarMoeda(juros)}</td>
+      <td>${formatarMoeda(mip)}</td>
+      <td>${formatarMoeda(dfi)}</td>
+      <td><strong>${formatarMoeda(total)}</strong></td>
+    </tr>`;
+  }
+  resultadoHTML += `</table>`;
+  document.getElementById('resultado').innerHTML = resultadoHTML;
+}
+</script>
+
 </body>
 </html>
